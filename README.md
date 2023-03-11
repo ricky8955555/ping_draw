@@ -24,5 +24,5 @@ Run `python3 -m ping_draw -a <action> -h` to see the usage of selected action.
 2. Draw image `/pathto/image.png` in loop, and request via source address `fd10:1234:5678:90ab:114:514:1919:810`.
 
     ```bash
-    python3 -m ping_draw -a draw-image -i "/pathto/image.png" -s "fd10:1234:5678:90ab:114:514:1919:810" -l
+    python3 -m ping_draw -a draw-image -p "/pathto/image.png" -s "fd10:1234:5678:90ab:114:514:1919:810" -l
     ```
