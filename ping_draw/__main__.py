@@ -1,5 +1,6 @@
 import argparse
 import itertools
+import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, Optional, TypeVar
 
@@ -84,7 +85,7 @@ def fill_canvas(
 @action(
     "draw-image",
     [
-        Argument("path", str, ["-i"], "the path to the image"),
+        Argument("path", str, ["-p"], "the path to the image"),
         Argument("sx", int, [], "x axis of the position to start to draw the image", False, 0),
         Argument("sy", int, [], "y axis of the position to start to draw the image", False, 0),
         Argument("width", int, ["-iw"], "the width of resized image if set, or canvas width set in config if not", False, None),
@@ -130,8 +131,17 @@ if __name__ == "__main__":
 
     parser.add_argument("--help", "-h", help="show this help message and exit", action="help")
     parser.add_argument("--loop", "-l", help="run in loop", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument(
+        "--interval",
+        "-i",
+        help="seconds between actions in loop (decimal)",
+        required=False,
+        default=0.0,
+        type=float
+    )
 
     act = actions[args.action]
+
     for arg in act.arguments:
         name = ("--" + arg.name) if len(arg.name) > 2 else ("-" + arg.name)
         parser.add_argument(
@@ -142,15 +152,21 @@ if __name__ == "__main__":
             required=arg.required,
             default=arg.default
         )
+
     parser.description = act.help
     args = parser.parse_args()
+
     calling_args = dict(
         arg
         for arg in vars(args).items()
         if arg[0] in (argument.name for argument in act.arguments)
     )
+
     if args.loop:
+        assert args.interval >= 0.0
         while True:
             act.func(**calling_args)
+            if args.interval:
+                time.sleep(args.interval)
     else:
         act.func(**calling_args)
