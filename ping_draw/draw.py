@@ -11,6 +11,11 @@ from ping_draw import Color, PosOrSize, config
 
 ICMP_ECHO = 8  # Echo request (per RFC792)
 
+CANVAS_SIZE = 512, 512
+"""
+The canvas size defined on http://us2.g-load.eu:9090/.
+"""
+
 
 def _icmpv6_bare_request(target: str, source_address: Optional[str] = None) -> None:
     """
@@ -44,7 +49,7 @@ def _get_address(pos: PosOrSize, color: Color) -> str:
     """
 
     x, y = pos
-    assert x < config.canvas_size[0] and y < config.canvas_size[1]  # x or y is oversized
+    assert x < CANVAS_SIZE[0] and y < CANVAS_SIZE[1]  # x or y is oversized
     r, g, b = color
     assert 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255  # color is invalid
     return config.target.format(

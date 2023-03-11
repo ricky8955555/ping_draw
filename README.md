@@ -26,3 +26,8 @@ Run `python3 -m ping_draw -a <action> -h` to see the usage of selected action.
     ```bash
     python3 -m ping_draw -a draw-image -p "/pathto/image.png" -s "fd10:1234:5678:90ab:114:514:1919:810" -l
     ```
+3. Draw mp4 video frames in loop.
+
+    ```bash
+    python3 -m ping_draw -a draw-mp4 -p "/pathto/idn_keihin_lcd.mp4" -sx 100 -sy 0  -iw 320 -ih 180 -l
+    ```
