@@ -28,7 +28,7 @@ def _icmpv6_bare_request(target: str, source_address: Optional[str] = None) -> N
 
     header = struct.pack("!BBHHH", ICMP_ECHO, 0, 0, 0, 0)
 
-    sock = socket.socket(socket.AF_INET6, socket.SOCK_RAW, socket.IPPROTO_ICMPV6)
+    sock = socket.socket(socket.AF_INET6, socket.SOCK_RAW, socket.IPPROTO_ICMP)
 
     if source_address:
         sock.bind((source_address, 1))
