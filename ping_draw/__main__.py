@@ -127,11 +127,11 @@ if __name__ == "__main__":
         "--action", "-a", choices=actions.keys(), help="action", required=True
     )
     args, unknown = parser.parse_known_args()
+
+    parser.add_argument("--help", "-h", help="show this help message and exit", action="help")
+    parser.add_argument("--loop", "-l", help="run in loop", action=argparse.BooleanOptionalAction, default=False)
+
     act = actions[args.action]
-
-    parser = argparse.ArgumentParser(description=act.help)
-    parser.add_argument("--loop", "-l", help="run in loop", action=argparse.BooleanOptionalAction)
-
     for arg in act.arguments:
         name = ("--" + arg.name) if len(arg.name) > 2 else ("-" + arg.name)
         parser.add_argument(
@@ -142,14 +142,14 @@ if __name__ == "__main__":
             required=arg.required,
             default=arg.default
         )
-
+    parser.description = act.help
     args = parser.parse_args()
     calling_args = dict(
         arg
         for arg in vars(args).items()
         if arg[0] in (argument.name for argument in act.arguments)
     )
-    if "loop" in args:
+    if args.loop:
         while True:
             act.func(**calling_args)
     else:
