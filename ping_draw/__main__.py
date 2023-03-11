@@ -94,7 +94,7 @@ def fill_canvas(
         Argument("source", str, ["-s"], "the source address for request", False, None),
         Argument("cache", str, ["-c"], "keep resized image stored in memory", False, True),
     ],
-    "Draw image on the canvas. Pillow module is REQUIRED!",
+    "Draw image on the canvas. Pillow is REQUIRED!",
 )
 def draw_image(
     path: str,
@@ -105,7 +105,7 @@ def draw_image(
     source: Optional[str] = None,
     cache: Optional[bool] = True,
 ) -> None:
-    from PIL import Image  # Pillow module is REQUIRED!
+    from PIL import Image  # Pillow is REQUIRED!
 
     if not width:
         width = config.canvas_size[0]
@@ -128,6 +128,59 @@ def draw_image(
     ):
         color: Color = resized_image.getpixel((x, y))[:3]
         draw.draw((sx + x, sy + y), color, source)
+
+
+@action(
+    "draw-mp4",
+    [
+        Argument("path", str, ["-p"], "the path to the mp4"),
+        Argument("sx", int, [], "x axis of the position to start to draw the video frames", False, 0),
+        Argument("sy", int, [], "y axis of the position to start to draw the video frames", False, 0),
+        Argument("width", int, ["-iw"], "the width of resized video frames if set, or canvas width set in config if not", False, None),
+        Argument("height", int, ["-ih"], "the height of resized video frames if set, or canvas height set in config if not", False, None),
+        Argument("source", str, ["-s"], "the source address for request", False, None),
+    ],
+    "Draw image on the canvas. Pillow and opencv-python is REQUIRED!",
+)
+def draw_mp4(
+    path: str,
+    sx: int = 0,
+    sy: int = 0,
+    width: Optional[int] = None,
+    height: Optional[int] = None,
+    source: Optional[str] = None,
+) -> None:
+    from PIL import Image  # Pillow is REQUIRED!
+    import cv2  # opencv-python is REQUIRED!
+    from time import sleep
+
+    if not width:
+        width = config.canvas_size[0]
+    if not height:
+        height = config.canvas_size[1]
+
+    assert 0 <= sx <= config.canvas_size[0] and 0 <= sy <= config.canvas_size[1]  # position is out of range
+    assert 0 <= sx + width <= config.canvas_size[0] and 0 <= sy + height <= config.canvas_size[1]  # the result is out of range
+
+    video = cv2.VideoCapture(path)
+    success, frame = video.read()
+    success = True
+    count = 0
+    while success:
+        video.set(cv2.CAP_PROP_POS_MSEC, (count * 1000))  # read every 1s
+        success, frame = video.read()
+
+        pil_img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        pil_img.thumbnail((width, height), Image.LANCZOS)
+
+        for x, y in itertools.product(
+            range(pil_img.width), range(height)
+        ):
+            color: Color = pil_img.getpixel((x, y))[:3]
+            draw.draw((sx + x, sy + y), color, source)
+        
+        sleep(1)
+        count = count + 1
 
 
 if __name__ == "__main__":
