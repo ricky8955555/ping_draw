@@ -94,7 +94,7 @@ def fill_canvas(
         Argument("source", str, ["-s"], "the source address for request", False, None),
         Argument("cache", str, ["-c"], "keep resized image stored in memory", False, True),
     ],
-    "Draw image on the canvas. Pillow module is REQUIRED!",
+    "Draw image on the canvas. Pillow is REQUIRED!",
 )
 def draw_image(
     path: str,
@@ -105,7 +105,7 @@ def draw_image(
     source: Optional[str] = None,
     cache: Optional[bool] = True,
 ) -> None:
-    from PIL import Image  # Pillow module is REQUIRED!
+    from PIL import Image  # Pillow is REQUIRED!
 
     if not width:
         width = config.canvas_size[0]
@@ -140,7 +140,7 @@ def draw_image(
         Argument("height", int, ["-ih"], "the height of resized video frames if set, or canvas height set in config if not", False, None),
         Argument("source", str, ["-s"], "the source address for request", False, None),
     ],
-    "Draw image on the canvas. Pillow module opencv-python module is REQUIRED!",
+    "Draw image on the canvas. Pillow and opencv-python is REQUIRED!",
 )
 def draw_mp4(
     path: str,
@@ -150,8 +150,8 @@ def draw_mp4(
     height: Optional[int] = None,
     source: Optional[str] = None,
 ) -> None:
-    from PIL import Image  # Pillow module is REQUIRED!
-    import cv2 # opencv-python is required
+    from PIL import Image  # Pillow is REQUIRED!
+    import cv2  # opencv-python is REQUIRED!
     from time import sleep
 
     if not width:
@@ -167,7 +167,7 @@ def draw_mp4(
     success = True
     count = 0
     while success:
-        video.set(cv2.CAP_PROP_POS_MSEC, (count * 1000)) # read every 1s
+        video.set(cv2.CAP_PROP_POS_MSEC, (count * 1000))  # read every 1s
         success, frame = video.read()
 
         pil_img = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
