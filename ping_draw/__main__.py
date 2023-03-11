@@ -26,7 +26,8 @@ class Action:
     help: Optional[str] = None
 
 
-actions: dict[str, Action] = {}
+actions = dict[str, Action]()
+context = dict[str, Any]()
 
 
 def action(
@@ -91,6 +92,7 @@ def fill_canvas(
         Argument("width", int, ["-iw"], "the width of resized image if set, or canvas width set in config if not", False, None),
         Argument("height", int, ["-ih"], "the height of resized image if set, or canvas height set in config if not", False, None),
         Argument("source", str, ["-s"], "the source address for request", False, None),
+        Argument("cache", str, ["-c"], "keep resized image stored in memory", False, True),
     ],
     "Draw image on the canvas. Pillow module is REQUIRED!",
 )
@@ -101,6 +103,7 @@ def draw_image(
     width: Optional[int] = None,
     height: Optional[int] = None,
     source: Optional[str] = None,
+    cache: Optional[bool] = True,
 ) -> None:
     from PIL import Image  # Pillow module is REQUIRED!
 
@@ -112,8 +115,13 @@ def draw_image(
     assert 0 <= sx <= config.canvas_size[0] and 0 <= sy <= config.canvas_size[1]  # position is out of range
     assert 0 <= sx + width <= config.canvas_size[0] and 0 <= sy + height <= config.canvas_size[1]  # the result is out of range
 
-    with Image.open(path) as image:
-        resized_image = image.resize((width, height))
+    resized_image = context.get("draw_image_resized_image") if cache else None
+
+    if not resized_image:
+        with Image.open(path) as image:
+            resized_image = image.resize((width, height))
+        if cache:
+            context["draw_image_resized_image"] = resized_image
 
     for x, y in itertools.product(
         range(resized_image.width), range(resized_image.height)
@@ -163,7 +171,7 @@ if __name__ == "__main__":
     )
 
     if args.loop:
-        assert args.interval >= 0.0
+        assert args.interval >= 0.0  # interval must be greater than 0
         while True:
             act.func(**calling_args)
             if args.interval:
