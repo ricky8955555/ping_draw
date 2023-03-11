@@ -6,7 +6,7 @@ A draw implement for Kioubit's IPv6 canvas service.
 
 - fill-color: Fill specific color in specific range on the canvas.
 - draw-image: Draw image on the canvas. (`Pillow` module is **REQUIRED**!)
-- draw-mp4: Draw image on the canvas. (`Pillow` and `opencv-python` is **REQUIRED**!)
+- play-mp4: Draw MP4 video frames on the canvas. (`Pillow` and `opencv-python` is **REQUIRED**!)
 
 ## Usage
 

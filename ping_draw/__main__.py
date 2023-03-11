@@ -133,14 +133,14 @@ def draw_image(
 @action(
     "draw-mp4",
     [
-        Argument("path", str, ["-p"], "the path to the mp4"),
+        Argument("path", str, ["-p"], "the path to the mp4 file"),
         Argument("sx", int, [], "x axis of the position to start to draw the video frames", False, 0),
         Argument("sy", int, [], "y axis of the position to start to draw the video frames", False, 0),
         Argument("width", int, ["-iw"], "the width of resized video frames if set, or canvas width set in config if not", False, None),
         Argument("height", int, ["-ih"], "the height of resized video frames if set, or canvas height set in config if not", False, None),
         Argument("source", str, ["-s"], "the source address for request", False, None),
     ],
-    "Draw image on the canvas. Pillow and opencv-python is REQUIRED!",
+    "Draw MP4 video frames on the canvas. Pillow and opencv-python is REQUIRED!",
 )
 def draw_mp4(
     path: str,
