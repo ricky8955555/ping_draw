@@ -1,3 +1,5 @@
+> The repository was archived due to the closed service.
+
 # ping_draw
 
 A draw implement for Kioubit's IPv6 canvas service.
